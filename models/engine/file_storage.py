@@ -29,6 +29,12 @@ class FileStorage():
         """Deseralizes the JSON file named in `__file_path` and assign
         it to `__objects`"""
         from ..base_model import BaseModel
+        from ..user import User
+        from ..state import State
+        from ..city import City
+        from ..place import Place
+        from ..amenity import Amenity
+        from ..review import Review
         objects_json = {}
         try:
             with open(self.__file_path, 'r', encoding='utf-8') as file:
