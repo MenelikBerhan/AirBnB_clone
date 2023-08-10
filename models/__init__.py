@@ -5,4 +5,7 @@ from .engine.file_storage import FileStorage
 
 storage = FileStorage()
 storage.reload()
-classes = set(storage.all().keys().split("."))
+allClasses = []
+for c in storage.all().keys():
+    allClasses.append(c.split(".")[0])
+classes = set(allClasses)
