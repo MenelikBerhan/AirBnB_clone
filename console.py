@@ -3,11 +3,25 @@
 For the AirBnB software
 """
 import cmd
+from models import storage, classes
+from models.base_model import BaseModel
 
 
 class HBNBCommand(cmd.Cmd):
     """Entry point for the command interpreter"""
     prompt = '(hbnb) '
+
+    def do_create(self, arg):
+        """Create a new instance of BaseModel, save it (to the JSON file)
+        and prints the id: $ create <class name>"""
+        if len(arg) == 0:
+            print("** class name missing **")
+        elif arg != "BaseModel":
+            print("** class doesn't exist **")
+        else:
+            new_instance = BaseModel()
+            new_instance.save()
+            print(new_instance.id)
 
     def do_quit(self, arg):
         """Quit command to exit the program"""
