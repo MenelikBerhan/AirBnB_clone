@@ -112,6 +112,12 @@ class HBNBCommand(cmd.Cmd):
             if command[0] == "destroy":
                 id = command[1][:-1].strip("\"")
                 self.do_destroy(f"{cmdComm[0]} {id}")
+            if command[0] == "update":
+                args = command[1][:-1].split(",")
+                id = args[0].strip("\"")
+                attr = args[1].strip().strip("\"")
+                value = args[2].strip()
+                self.do_update(f"{cmdComm[0]} {id} {attr} {value}")
 
     def do_quit(self, arg):
         """Quit command to exit the program"""
