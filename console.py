@@ -62,6 +62,31 @@ class HBNBCommand(cmd.Cmd):
         else:
             print("** class doesn't exist **")
 
+    def do_update(self, arg):
+        """Updates an instance based on the class name and id by adding or
+         updating attribute (save the change into the JSON file).
+         Ex: $ update BaseModel 1234-1234-1234 email
+
+        Usage: update <class name> <id> <attribute name> '<attribute value>'
+        """
+        from shlex import split
+        if self.errorCheck(arg):
+            return
+        args = split(arg)
+        if not args[2]:
+            print("** attribute name missing **")
+        elif not args[3]:
+            print("** value missing **")
+        else:
+            key = args[0] + "." + args[1]
+            obj = storage.all()[key]
+            if hasattr(obj, args[2]):
+                attr_type = type(getattr(obj, args[2]))
+                setattr(obj, args[2], attr_type(args[3]))
+            else:
+                setattr(obj, args[2], args[3])
+            storage.save()
+
     def do_quit(self, arg):
         """Quit command to exit the program"""
         return True
