@@ -89,6 +89,20 @@ class HBNBCommand(cmd.Cmd):
                 setattr(obj, args[2], args[3])
             storage.save()
 
+    def default(self, line):
+        """Called for the following commands:
+        <class name>.all()
+        <class name>.count()
+        <class name>.show(<id>)
+        <class name>.destroy(<id>)
+        <class name>.update(<id>, <attribute name>, <attribute value>)  
+        """
+        cmdComm = line.split(".")
+        if len(cmdComm) == 2:
+            command = cmdComm[1].split("(")
+            if command[0] == "all":
+                self.do_all(cmdComm[0])
+
     def do_quit(self, arg):
         """Quit command to exit the program"""
         return True
