@@ -3,8 +3,7 @@
 For the AirBnB software
 
 Attributes:
-    allClasses (list): list of all classes
-    classes (set): set of all classes
+    classes (set): set of all class names
 
 Usage:
     $ ./console.py
@@ -14,8 +13,10 @@ Usage:
     $ echo "help" | ./console.py
 """
 import cmd
-from models import storage, classes
-from models.base_model import BaseModel
+from models import storage, class_dict
+from importlib import import_module
+
+classes = set(class_dict.keys())
 
 
 class HBNBCommand(cmd.Cmd):
@@ -30,7 +31,8 @@ class HBNBCommand(cmd.Cmd):
         elif arg not in classes:
             print("** class doesn't exist **")
         else:
-            new_instance = BaseModel()
+            module = import_module(f"models.{class_dict[arg]}")
+            new_instance = getattr(module, arg)()
             new_instance.save()
             print(new_instance.id)
 
