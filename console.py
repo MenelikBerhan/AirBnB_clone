@@ -102,6 +102,10 @@ class HBNBCommand(cmd.Cmd):
             command = cmdComm[1].split("(")
             if command[0] == "all":
                 self.do_all(cmdComm[0])
+            if command[0] == "count":
+                objs = [obj for key, obj in storage.all().items()
+                        if cmdComm[0] in key]
+                print(len(objs))
 
     def do_quit(self, arg):
         """Quit command to exit the program"""
