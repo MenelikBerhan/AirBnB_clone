@@ -1,2 +1,8 @@
 .vscode/
 file.json
+*main.py
+g_console.py
+*.json
+line_split.py
+models/engine/__pycache__/*
+models/__pycache__/*
