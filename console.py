@@ -109,6 +109,9 @@ class HBNBCommand(cmd.Cmd):
             if command[0] == "show":
                 id = command[1][:-1].strip("\"")
                 self.do_show(f"{cmdComm[0]} {id}")
+            if command[0] == "destroy":
+                id = command[1][:-1].strip("\"")
+                self.do_destroy(f"{cmdComm[0]} {id}")
 
     def do_quit(self, arg):
         """Quit command to exit the program"""
