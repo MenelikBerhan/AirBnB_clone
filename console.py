@@ -106,6 +106,9 @@ class HBNBCommand(cmd.Cmd):
                 objs = [obj for key, obj in storage.all().items()
                         if cmdComm[0] in key]
                 print(len(objs))
+            if command[0] == "show":
+                id = command[1][:-1].strip("\"")
+                self.do_show(f"{cmdComm[0]} {id}")
 
     def do_quit(self, arg):
         """Quit command to exit the program"""
