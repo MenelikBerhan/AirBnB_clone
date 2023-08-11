@@ -9,6 +9,7 @@ class BaseModel():
     """A base class that defines common attributes and methods
     for other classes.
     """
+
     def __init__(self, *args, **kwargs):
         """Creates a `BaseModel` instance object"""
         if kwargs:
