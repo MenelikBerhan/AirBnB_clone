@@ -44,6 +44,12 @@ The following commands are available:
 - **destroy**: Deletes an instance based on the class name and id (save the change into the JSON file).
 - **all**: Prints all string representation of all instances based or not on the class name.
 - **update**: Updates an instance based on the class name and id by adding or updating attribute (save the change into the JSON file).
+- **<class name>.all()**: Prints all string representation of all instances of the class name.
+- **<class name>.count()**: Retrieves the number of instances of a class.
+- **<class name>.show(<id>)**: Prints the string representation of an instance based on the class name and id.
+- **<class name>.update(<id>, <attribute name>, <attribute value>)**: Updates an instance based on the class name and id by adding or updating attribute (save the change into the JSON file).
+- **<class name>.update(<id>, <dictionary representation>)**: Updates an instance based on the class name and id with a dictionary: <attribute name>: <attribute value> (save the change into the JSON file).
+- **quit**: Exits the program.
 
 ## Examples
 
@@ -53,7 +59,11 @@ The following commands are available:
 (hbnb) destroy BaseModel 1234-1234-1234
 (hbnb) all
 (hbnb) all BaseModel
-(hbnb) update BaseModel 1234-1234-1234 email "
+(hbnb) update BaseModel 1234-1234-1234 email "mail@mail.com"
+(hbnb) BaseModel.all()
+(hbnb) BaseModel.count()
+(hbnb) BaseModel.show(1234-1234-1234)
+(hbnb) BaseModel.update(1234-1234-1234, email, "mail@mail.com")
 (hbnb) quit
 ```
 

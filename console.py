@@ -75,9 +75,9 @@ class HBNBCommand(cmd.Cmd):
         if self.errorCheck(arg):
             return
         args = split(arg)
-        if not args[2]:
+        if len(args) < 3:
             print("** attribute name missing **")
-        elif not args[3]:
+        elif len(args) < 4:
             print("** value missing **")
         else:
             key = args[0] + "." + args[1]
@@ -87,7 +87,50 @@ class HBNBCommand(cmd.Cmd):
                 setattr(obj, args[2], attr_type(args[3]))
             else:
                 setattr(obj, args[2], args[3])
-            storage.save()
+            obj.save()
+
+    def default(self, line):
+        """Called for the following commands:
+        <class name>.all()
+        <class name>.count()
+        <class name>.show(<id>)
+        <class name>.destroy(<id>)
+        <class name>.update(<id>, <attribute name>, <attribute value>)
+        """
+        from re import compile
+        from ast import literal_eval
+        rx = compile(r'([^\.]+)(.+)$')
+        cmdComm = rx.match(line).groups()
+        if len(cmdComm) == 2:
+            command = cmdComm[1][1:].split("(")
+            if command[0] == "all":
+                self.do_all(cmdComm[0])
+            if command[0] == "count":
+                objs = [obj for key, obj in storage.all().items()
+                        if cmdComm[0] in key]
+                print(len(objs))
+            if command[0] == "show":
+                id = command[1][:-1].strip("\"")
+                self.do_show(f"{cmdComm[0]} {id}")
+            if command[0] == "destroy":
+                id = command[1][:-1].strip("\"")
+                self.do_destroy(f"{cmdComm[0]} {id}")
+            if command[0] == "update":
+                try:
+                    rx = compile(r'([^,]+),\s+(.+)$')
+                    (id, attrs) = rx.match(command[1][:-1]).groups()
+                    id = id.strip("\"")
+                    if attrs.startswith('{') and attrs.endswith('}'):
+                        attrs = literal_eval(attrs)
+                        for attr, value in attrs.items():
+                            self.do_update(f"{cmdComm[0]} {id} {attr} {value}")
+                    else:
+                        args = attrs.split(",")
+                        attr = args[0].strip().strip("\"")
+                        value = args[1].strip()
+                        self.do_update(f"{cmdComm[0]} {id} {attr} {value}")
+                except Exception:
+                    pass
 
     def do_quit(self, arg):
         """Quit command to exit the program"""
@@ -95,6 +138,7 @@ class HBNBCommand(cmd.Cmd):
 
     def do_EOF(self, arg):
         """EOF command to exit the program"""
+        print()
         return True
 
     def emptyline(self):
