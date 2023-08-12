@@ -24,8 +24,8 @@ class HBNBCommand(cmd.Cmd):
     prompt = '(hbnb) '
 
     def do_create(self, arg):
-        """Create a new instance of BaseModel, save it (to the JSON file)
-        and prints the id: $ create <class name>"""
+        """$ create <class name>
+        Create a new instance of a class"""
         if len(arg) == 0:
             print("** class name missing **")
         elif arg not in classes:
@@ -37,23 +37,23 @@ class HBNBCommand(cmd.Cmd):
             print(new_instance.id)
 
     def do_show(self, arg):
-        """Prints the string representation of an instance based on the class
-        name and id: $ show <class name> <id>"""
+        """$ show <class name> <id>
+        Prints the string representation of an instance"""
         if not self.errorCheck(arg):
             key = arg.split()[0] + "." + arg.split()[1]
             print(storage.all()[key])
 
     def do_destroy(self, arg):
-        """Deletes an instance based on the class name and id (save the change
-         into the JSON file) . Ex: $ destroy BaseModel 1234-1234-1234"""
+        """$ destroy <class name> <id>
+        Deletes an instance based on the class name and id"""
         if not self.errorCheck(arg):
             key = arg.split()[0] + "." + arg.split()[1]
             del storage.all()[key]
             storage.save()
 
     def do_all(self, arg):
-        """Prints all string representation of all instances based or not on
-         the class name. Ex: $ all BaseModel or $ all"""
+        """$ all [<class name>]
+        Prints all string representations of all instances"""
         if len(arg) == 0:
             objs = [str(obj) for obj in storage.all().values()]
             print(objs)
@@ -65,12 +65,8 @@ class HBNBCommand(cmd.Cmd):
             print("** class doesn't exist **")
 
     def do_update(self, arg):
-        """Updates an instance based on the class name and id by adding or
-         updating attribute (save the change into the JSON file).
-         Ex: $ update BaseModel 1234-1234-1234 email
-
-        Usage: update <class name> <id> <attribute name> '<attribute value>'
-        """
+        """$ update <class name> <id> <attribute name> '<value>'
+        Updates an instance based on the class name and id"""
         from shlex import split
         if self.errorCheck(arg):
             return
@@ -89,6 +85,26 @@ class HBNBCommand(cmd.Cmd):
                 setattr(obj, args[2], args[3])
             obj.save()
 
+    def help_create(self):
+        print("$ create <class name>",
+              "Create a new instance of a class", sep="\n")
+
+    def help_show(self):
+        print("$ show <class name> <id>",
+              "Prints the string representation of an instance", sep="\n")
+
+    def help_destroy(self):
+        print("$ destroy <class name> <id>",
+              "Deletes an instance based on the class name and id", sep="\n")
+
+    def help_all(self):
+        print("$ all [<class name>]",
+              "Prints all string representations of all instances", sep="\n")
+
+    def help_update(self):
+        print("$ update <class name> <id> <attribute name> '<value>'",
+              "Updates an instance based on the class name and id", sep="\n")
+
     def default(self, line):
         """Called for the following commands:
         <class name>.all()
@@ -99,38 +115,59 @@ class HBNBCommand(cmd.Cmd):
         """
         from re import compile
         from ast import literal_eval
-        rx = compile(r'([^\.]+)(.+)$')
+        rx = compile(r'([^\.]+)(.*)$')
         cmdComm = rx.match(line).groups()
-        if len(cmdComm) == 2:
+        if len(cmdComm) == 2 and cmdComm[1]:
             command = cmdComm[1][1:].split("(")
             if command[0] == "all":
                 self.do_all(cmdComm[0])
-            if command[0] == "count":
+            elif command[0] == "count":
+                if cmdComm[0] not in classes:
+                    print("** class doesn't exist **")
+                    return
                 objs = [obj for key, obj in storage.all().items()
                         if cmdComm[0] in key]
                 print(len(objs))
-            if command[0] == "show":
+            elif command[0] == "show":
                 id = command[1][:-1].strip("\"")
                 self.do_show(f"{cmdComm[0]} {id}")
-            if command[0] == "destroy":
+            elif command[0] == "destroy":
                 id = command[1][:-1].strip("\"")
                 self.do_destroy(f"{cmdComm[0]} {id}")
-            if command[0] == "update":
-                try:
-                    rx = compile(r'([^,]+),\s+(.+)$')
-                    (id, attrs) = rx.match(command[1][:-1]).groups()
-                    id = id.strip("\"")
-                    if attrs.startswith('{') and attrs.endswith('}'):
-                        attrs = literal_eval(attrs)
-                        for attr, value in attrs.items():
-                            self.do_update(f"{cmdComm[0]} {id} {attr} {value}")
-                    else:
-                        args = attrs.split(",")
-                        attr = args[0].strip().strip("\"")
-                        value = args[1].strip()
+            elif command[0] == "update":
+                if cmdComm[0] not in classes:
+                    print("** class doesn't exist **")
+                    return
+                rx = compile(r'([^,]+)(?:,\s*(.*))?$')
+                args = rx.match(command[1][:-1])
+                if not args:
+                    print("** instance id missing **")
+                    return
+                args = args.groups()
+                id = args[0].strip("\"")
+                if (cmdComm[0] + "." + id) not in storage.all():
+                    print("** no instance found **")
+                    return
+                if not args[1]:
+                    print("** attribute name missing **")
+                    return
+                attrs = args[1]
+                if attrs.startswith('{') and attrs.endswith('}'):
+                    attrs = literal_eval(attrs)
+                    for attr, value in attrs.items():
                         self.do_update(f"{cmdComm[0]} {id} {attr} {value}")
-                except Exception:
-                    pass
+                else:
+                    args = attrs.split(",")
+                    if len(args) < 2:
+                        print("** value missing **")
+                        return
+                    attr = args[0].strip().strip("\"")
+                    value = args[1].strip()
+                    self.do_update(f"{cmdComm[0]} {id} {attr} {value}")
+            else:
+                return super().default(line)
+        else:
+            return super().default(line)
 
     def do_quit(self, arg):
         """Quit command to exit the program"""
