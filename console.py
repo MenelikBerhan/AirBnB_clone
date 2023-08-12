@@ -129,16 +129,22 @@ class HBNBCommand(cmd.Cmd):
                 id = command[1][:-1].strip("\"")
                 self.do_destroy(f"{cmdComm[0]} {id}")
             elif command[0] == "update":
+                if cmdComm[0] not in classes:
+                    print("** class doesn't exist **")
+                    return
                 rx = compile(r'([^,]+)(?:,\s*(.*))?$')
                 args = rx.match(command[1][:-1])
                 if not args:
                     print("** instance id missing **")
                     return
                 args = args.groups()
+                id = args[0].strip("\"")
+                if (cmdComm[0] + "." + id) not in storage.all():
+                    print("** no instance found **")
+                    return
                 if not args[1]:
                     print("** attribute name missing **")
                     return
-                id = args[0].strip("\"")
                 attrs = args[1]
                 if attrs.startswith('{') and attrs.endswith('}'):
                     attrs = literal_eval(attrs)
