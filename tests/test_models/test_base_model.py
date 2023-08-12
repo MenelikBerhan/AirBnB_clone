@@ -53,10 +53,6 @@ class TestBaseModel(unittest.TestCase):
         self.assertTrue(all(hasattr(obj, attr) for obj in self.objects
                             for attr in attributes))
 
-    def test_id(self):
-        """Tests public instance attribute `id`"""
-        self.assertTrue(hasattr(self.a, 'id'))
-
     def test_id_value(self):
         """Tests if id attribute is valid"""
         self.assertTrue(all(type(obj.id) == str for obj in self.objects))
@@ -94,7 +90,8 @@ class TestBaseModel(unittest.TestCase):
 
     def test_storage_variable(self):
         """Tests storage variable"""
-        import models, models.base_model as module
+        import models
+        import models.base_model as module
         self.assertTrue(hasattr(models, 'storage'))
         self.assertTrue(type(models.storage).__name__ == 'FileStorage')
         self.assertTrue(hasattr(module, 'storage'))
