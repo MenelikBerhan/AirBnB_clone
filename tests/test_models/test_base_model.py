@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 """
-Tests for the `BaseModel` class
+`TestBaseModel` test case to test the `BaseModel` class
 """
 from models.base_model import BaseModel
 from datetime import datetime
@@ -21,7 +21,7 @@ class TestBaseModel(unittest.TestCase):
 
     def tearDown(self):
         """Deletes objects created after each test"""
-        del self.a, self.b
+        del self.a, self.b, self.c
 
     def test_class_init(self):
         """Test instance class names"""
