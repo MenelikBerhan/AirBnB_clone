@@ -111,6 +111,19 @@ class TestBaseModel(unittest.TestCase):
                   for new, old in zip(update_at_new, updated_at_old)]
         self.assertTrue(all(delta >= 1 for delta in deltas))
 
+    def test_to_dict(self):
+        """Tests the to_dict method"""
+        with self.assertRaises(TypeError) as e:
+            self.a.to_dict(12)
+        self.assertEqual(str(e.exception), "to_dict() takes 1 positional "
+                         + "argument but 2 were given")
+        for obj in self.objects:
+            obj_dict = obj.__dict__.copy()
+            obj_dict['__class__'] = type(obj).__name__
+            obj_dict['created_at'] = obj.created_at.isoformat()
+            obj_dict['updated_at'] = obj.updated_at.isoformat()
+            self.assertEqual(obj.to_dict(), obj_dict)
+
 
 if __name__ == '__main__':
     unittest.main()
