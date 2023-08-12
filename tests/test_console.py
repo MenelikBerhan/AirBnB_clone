@@ -221,6 +221,18 @@ class TestConsole(TestCase):
                 f"User.update({uid}, {{'first_name': 'Tunde'}})")
             HBNBCommand().onecmd(f"User.show({uid})")
             self.assertIn("'first_name': 'Tunde'", f.getvalue())
+        with patch('sys.stdout', new=StringIO()) as f:
+            HBNBCommand().onecmd(
+                f"User.update({uid}, first_name, Wale, last_name, Tunde)")
+            HBNBCommand().onecmd(f"User.show({uid})")
+            self.assertIn("'first_name': 'Wale'", f.getvalue())
+            self.assertNotIn("'last_name': 'Tunde'", f.getvalue())
+        with patch('sys.stdout', new=StringIO()) as f:
+            HBNBCommand().onecmd(
+                f"update User {uid} first_name Tunde last_name Wale")
+            HBNBCommand().onecmd(f"show User {uid}")
+            self.assertIn("'first_name': 'Tunde'", f.getvalue())
+            self.assertNotIn("'last_name': 'Wale'", f.getvalue())
         # Error handling main commands
         output = "** class name missing **\n"
         with patch('sys.stdout', new=StringIO()) as f:
