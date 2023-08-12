@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 """Contains test cases for the command line interface of the AirBnB project"""
+import os
 import pycodestyle
 from io import StringIO
 from unittest import TestCase
@@ -16,6 +17,12 @@ class TestConsole(TestCase):
         FileStorage._FileStorage__objects = {}
         FileStorage().save()
 
+    def tearDown(self):
+        """Resets FileStorage data."""
+        FileStorage._FileStorage__objects = {}
+        if os.path.exists(FileStorage._FileStorage__file_path):
+            os.remove(FileStorage._FileStorage__file_path)
+
     def test_create(self):
         """Test all variations of the create command"""
         storage = FileStorage()
@@ -26,7 +33,10 @@ class TestConsole(TestCase):
             "Create a new instance of a class"
         with patch('sys.stdout', new=StringIO()) as f:
             HBNBCommand().onecmd("help create")
-            self.assertEqual(f.getvalue(), output)
+            self.assertEqual(f.getvalue().strip(), output)
+        with patch('sys.stdout', new=StringIO()) as f:
+            HBNBCommand().onecmd("? create")
+            self.assertEqual(f.getvalue().strip(), output)
         # Create a new instance of a class
         with patch('sys.stdout', new=StringIO()) as f:
             HBNBCommand().onecmd("create BaseModel")
@@ -66,7 +76,10 @@ class TestConsole(TestCase):
             "Prints the string representation of an instance"
         with patch('sys.stdout', new=StringIO()) as f:
             HBNBCommand().onecmd("help show")
-            self.assertEqual(f.getvalue(), output)
+            self.assertEqual(f.getvalue().strip(), output)
+        with patch('sys.stdout', new=StringIO()) as f:
+            HBNBCommand().onecmd("? show")
+            self.assertEqual(f.getvalue().strip(), output)
         # Testing show command with an actual instance
         with patch('sys.stdout', new=StringIO()) as f:
             HBNBCommand().onecmd("create User")
@@ -115,7 +128,10 @@ class TestConsole(TestCase):
             "Deletes an instance based on the class name and id"
         with patch('sys.stdout', new=StringIO()) as f:
             HBNBCommand().onecmd("help destroy")
-            self.assertEqual(f.getvalue(), output)
+            self.assertEqual(f.getvalue().strip(), output)
+        with patch('sys.stdout', new=StringIO()) as f:
+            HBNBCommand().onecmd("? destroy")
+            self.assertEqual(f.getvalue().strip(), output)
         # Testing destroy command with an actual instance
         with patch('sys.stdout', new=StringIO()) as f:
             HBNBCommand().onecmd("create Place")
@@ -171,7 +187,10 @@ class TestConsole(TestCase):
             "Prints all string representations of all instances"
         with patch('sys.stdout', new=StringIO()) as f:
             HBNBCommand().onecmd("help all")
-            self.assertEqual(f.getvalue(), output)
+            self.assertEqual(f.getvalue().strip(), output)
+        with patch('sys.stdout', new=StringIO()) as f:
+            HBNBCommand().onecmd("? all")
+            self.assertEqual(f.getvalue().strip(), output)
         # Testing all command with an actual instance
         with patch('sys.stdout', new=StringIO()) as f:
             HBNBCommand().onecmd("create City")
@@ -203,7 +222,10 @@ class TestConsole(TestCase):
             "Updates an instance based on the class name and id"
         with patch('sys.stdout', new=StringIO()) as f:
             HBNBCommand().onecmd("help update")
-            self.assertEqual(f.getvalue(), output)
+            self.assertEqual(f.getvalue().strip(), output)
+        with patch('sys.stdout', new=StringIO()) as f:
+            HBNBCommand().onecmd("? update")
+            self.assertEqual(f.getvalue().strip(), output)
         # Testing update command with an actual instance
         with patch('sys.stdout', new=StringIO()) as f:
             HBNBCommand().onecmd("create User")
@@ -281,7 +303,7 @@ class TestConsole(TestCase):
             self.assertEqual(f.getvalue(), output)
 
     def test_quit(self):
-        """Test the quit help command"""
+        """Test the quit command"""
         output = "Quit command to exit the program\n"
         with patch('sys.stdout', new=StringIO()) as f:
             HBNBCommand().onecmd("help quit")
@@ -290,6 +312,31 @@ class TestConsole(TestCase):
         with patch('sys.stdout', new=StringIO()) as f:
             HBNBCommand().onecmd("quit")
             self.assertEqual(f.getvalue(), output)
+
+    def test_EOF(self):
+        """Test the EOF command"""
+        output = "EOF command to exit the program\n"
+        with patch('sys.stdout', new=StringIO()) as f:
+            HBNBCommand().onecmd("help EOF")
+            self.assertEqual(f.getvalue(), output)
+        with patch('sys.stdout', new=StringIO()) as f:
+            HBNBCommand().onecmd("EOF")
+            self.assertEqual(f.getvalue(), "\n")
+
+    def test_emptyline(self):
+        """Test an emptyline input"""
+        with patch('sys.stdout', new=StringIO()) as f:
+            HBNBCommand().onecmd("\n")
+            self.assertEqual(f.getvalue(), "")
+
+    def test_help(self):
+        """Test all variations of the help command"""
+        with patch('sys.stdout', new=StringIO()) as f:
+            HBNBCommand().onecmd("help")
+            self.assertIsInstance(f.getvalue(), str)
+        with patch('sys.stdout', new=StringIO()) as f:
+            HBNBCommand().onecmd("?")
+            self.assertIsInstance(f.getvalue(), str)
 
     def testPycodeStyle(self):
         """Pycodestyle test for console.py"""

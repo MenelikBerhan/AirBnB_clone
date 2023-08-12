@@ -87,27 +87,23 @@ class HBNBCommand(cmd.Cmd):
 
     def help_create(self):
         print("$ create <class name>",
-              "Create a new instance of a class", sep="\n", end='')
+              "Create a new instance of a class", sep="\n")
 
     def help_show(self):
         print("$ show <class name> <id>",
-              "Prints the string representation of an instance",
-              sep="\n", end='')
+              "Prints the string representation of an instance", sep="\n")
 
     def help_destroy(self):
         print("$ destroy <class name> <id>",
-              "Deletes an instance based on the class name and id",
-              sep="\n", end='')
+              "Deletes an instance based on the class name and id", sep="\n")
 
     def help_all(self):
         print("$ all [<class name>]",
-              "Prints all string representations of all instances",
-              sep="\n", end='')
+              "Prints all string representations of all instances", sep="\n")
 
     def help_update(self):
         print("$ update <class name> <id> <attribute name> '<value>'",
-              "Updates an instance based on the class name and id",
-              sep="\n", end='')
+              "Updates an instance based on the class name and id", sep="\n")
 
     def default(self, line):
         """Called for the following commands:
