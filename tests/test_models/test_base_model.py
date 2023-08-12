@@ -5,7 +5,6 @@ Tests for the `BaseModel` class
 from models.base_model import BaseModel
 from datetime import datetime
 import time
-from importlib import import_module
 import uuid
 import unittest
 
