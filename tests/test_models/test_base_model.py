@@ -92,6 +92,14 @@ class TestBaseModel(unittest.TestCase):
         self.assertTrue(all(hasattr(obj, method)
                             for obj in self.objects for method in methods))
 
+    def test_storage_variable(self):
+        """Tests storage variable"""
+        import models, models.base_model as module
+        self.assertTrue(hasattr(models, 'storage'))
+        self.assertTrue(type(models.storage).__name__ == 'FileStorage')
+        self.assertTrue(hasattr(module, 'storage'))
+        self.assertTrue(type(module.storage).__name__ == 'FileStorage')
+
     def test_str(self):
         """Tests __str__ method"""
         with self.assertRaises(TypeError) as e:
