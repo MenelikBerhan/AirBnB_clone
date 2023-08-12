@@ -10,6 +10,7 @@ from models.review import Review
 from models.state import State
 from models.user import User
 from datetime import datetime
+import time
 from importlib import import_module
 import uuid
 import unittest
@@ -22,14 +23,16 @@ class TestBaseModel(unittest.TestCase):
         """Create instances of Base class for testcases"""
         self.a = BaseModel()
         self.b = BaseModel()
+        self.c = BaseModel()
         self.objects = (self.a, self.b)
 
     def tearDown(self):
         """Deletes objects created after each test"""
         del self.a, self.b
 
-    def test_class(self):
+    def test_class_init(self):
         """Test instance class names"""
+        self.assertTrue(hasattr(BaseModel, '__init__'))
         self.assertTrue(all(type(obj) == BaseModel for obj in self.objects))
 
     def test_attributes(self):
@@ -58,7 +61,7 @@ class TestBaseModel(unittest.TestCase):
         self.assertTrue(all(type(obj.created_at) == datetime
                             for obj in self.objects))
 
-        self.assertTrue(all((datetime.now() - obj.created_at).seconds <= 1
+        self.assertTrue(all((datetime.now() - obj.created_at).seconds == 0
                             for obj in self.objects))
 
     def test_updated_at(self):
@@ -66,8 +69,47 @@ class TestBaseModel(unittest.TestCase):
         self.assertTrue(all(type(obj.updated_at) == datetime
                             for obj in self.objects))
 
-        self.assertTrue(all((datetime.now() - obj.updated_at).seconds <= 1
+        self.assertTrue(all((datetime.now() - obj.updated_at).seconds == 0
                             for obj in self.objects))
+
+    def test_methods(self):
+        """Tests if required methods exist"""
+        methods = ['__str__', 'save', 'to_dict']
+        self.assertTrue(hasattr(BaseModel, method) for method in methods)
+        self.assertTrue(all(hasattr(obj, method)
+                            for obj in self.objects for method in methods))
+
+    def test_str(self):
+        """Tests __str__ method"""
+        with self.assertRaises(TypeError) as e:
+            self.a.__str__(12)
+        self.assertEqual(str(e.exception), "__str__() takes 1 positional "
+                         + "argument but 2 were given")
+        self.assertTrue(str(obj) == "[BaseModel] ({obj.id}) {obj.__dict__}"
+                        for obj in self.objects)
+
+    def test_save(self):
+        """Tests the save method"""
+        with self.assertRaises(TypeError) as e:
+            self.a.save(12)
+        self.assertEqual(str(e.exception), "save() takes 1 positional "
+                         + "argument but 2 were given")
+        updated_at_old = [obj.updated_at for obj in self.objects]
+        for obj in self.objects:
+            obj.save()
+        update_at_new = [obj.updated_at for obj in self.objects]
+        deltas = [(new - old)
+                  for new, old in zip(update_at_new, updated_at_old)]
+        self.assertTrue(all(delta.days == 0 and delta.seconds == 0
+                            and delta.microseconds > 0 for delta in deltas))
+        time.sleep(1)
+        for obj in self.objects:
+            obj.save()
+        updated_at_old = update_at_new
+        update_at_new = [obj.updated_at for obj in self.objects]
+        deltas = [(new - old).total_seconds()
+                  for new, old in zip(update_at_new, updated_at_old)]
+        self.assertTrue(all(delta >= 1 for delta in deltas))
 
 
 if __name__ == '__main__':
