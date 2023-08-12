@@ -24,6 +24,8 @@ class HBNBCommand(cmd.Cmd):
     prompt = '(hbnb) '
 
     def do_create(self, arg):
+        """$ create <class name>
+        Create a new instance of a class"""
         if len(arg) == 0:
             print("** class name missing **")
         elif arg not in classes:
@@ -35,17 +37,23 @@ class HBNBCommand(cmd.Cmd):
             print(new_instance.id)
 
     def do_show(self, arg):
+        """$ show <class name> <id>
+        Prints the string representation of an instance"""
         if not self.errorCheck(arg):
             key = arg.split()[0] + "." + arg.split()[1]
             print(storage.all()[key])
 
     def do_destroy(self, arg):
+        """$ destroy <class name> <id>
+        Deletes an instance based on the class name and id"""
         if not self.errorCheck(arg):
             key = arg.split()[0] + "." + arg.split()[1]
             del storage.all()[key]
             storage.save()
 
     def do_all(self, arg):
+        """$ all [<class name>]
+        Prints all string representations of all instances"""
         if len(arg) == 0:
             objs = [str(obj) for obj in storage.all().values()]
             print(objs)
@@ -57,6 +65,8 @@ class HBNBCommand(cmd.Cmd):
             print("** class doesn't exist **")
 
     def do_update(self, arg):
+        """$ update <class name> <id> <attribute name> '<value>'
+        Updates an instance based on the class name and id"""
         from shlex import split
         if self.errorCheck(arg):
             return
