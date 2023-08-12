@@ -17,7 +17,7 @@ class TestBaseModel(unittest.TestCase):
         self.a = BaseModel()
         self.b = BaseModel()
         self.c = BaseModel()
-        self.objects = (self.a, self.b)
+        self.objects = (self.a, self.b, self.c)
 
     def tearDown(self):
         """Deletes objects created after each test"""
@@ -28,10 +28,30 @@ class TestBaseModel(unittest.TestCase):
         self.assertTrue(hasattr(BaseModel, '__init__'))
         self.assertTrue(all(type(obj) == BaseModel for obj in self.objects))
 
+    def test_init_method(self):
+        """Tests __init__method"""
+        a_1 = BaseModel(**self.a.to_dict())
+        a_2 = BaseModel('1', '2', '3', **self.a.to_dict())
+        self.assertTrue(self.a.id == a_1.id == a_2.id)
+        self.assertTrue(self.a.created_at == a_1.created_at == a_2.created_at)
+        self.assertTrue(self.a.updated_at == a_1.updated_at ==
+                        a_2.updated_at)
+        self.assertTrue(self.a.to_dict() == a_1.to_dict() == a_2.to_dict())
+        self.assertTrue(all('__class__' not in obj.__dict__
+                            for obj in (a_1, a_2)))
+        self.assertTrue(all(type(obj.created_at) == datetime
+                            for obj in (a_1, a_2)))
+        self.assertTrue(all(type(obj.updated_at) == datetime
+                            for obj in (a_1, a_2)))
+        a = BaseModel('123', '0', '0')
+        self.assertTrue(all([a.id != '123', a.created_at != '0',
+                            a.updated_at != '0']))
+
     def test_attributes(self):
         """Tests if required attributes exist"""
         attributes = ['id', 'created_at', 'updated_at']
-        self.assertTrue(all(hasattr(self.a, attr) for attr in attributes))
+        self.assertTrue(all(hasattr(obj, attr) for obj in self.objects
+                            for attr in attributes))
 
     def test_id(self):
         """Tests public instance attribute `id`"""
@@ -110,6 +130,14 @@ class TestBaseModel(unittest.TestCase):
             self.a.to_dict(12)
         self.assertEqual(str(e.exception), "to_dict() takes 1 positional "
                          + "argument but 2 were given")
+        for obj in self.objects:
+            obj_dict = obj.__dict__.copy()
+            obj_dict['__class__'] = type(obj).__name__
+            obj_dict['created_at'] = obj.created_at.isoformat()
+            obj_dict['updated_at'] = obj.updated_at.isoformat()
+            self.assertEqual(obj.to_dict(), obj_dict)
+            obj.name = 'test'
+            obj.number = 1
         for obj in self.objects:
             obj_dict = obj.__dict__.copy()
             obj_dict['__class__'] = type(obj).__name__
