@@ -28,6 +28,7 @@ class TestUser(unittest.TestCase):
         """Test instance objects type and class parent"""
         self.assertTrue(issubclass(User, BaseModel))
         self.assertTrue(hasattr(User, '__init__'))
+        self.assertTrue(all(hasattr(obj, '__init__') for obj in self.objects))
         self.assertTrue(all(type(obj) == User for obj in self.objects))
         self.assertTrue(all(isinstance(obj, (User, BaseModel))
                             for obj in self.objects))

@@ -26,6 +26,7 @@ class TestBaseModel(unittest.TestCase):
     def test_class_init(self):
         """Test instance class names"""
         self.assertTrue(hasattr(BaseModel, '__init__'))
+        self.assertTrue(all(hasattr(obj, '__init__') for obj in self.objects))
         self.assertTrue(all(type(obj) == BaseModel for obj in self.objects))
 
     def test_init_method(self):
