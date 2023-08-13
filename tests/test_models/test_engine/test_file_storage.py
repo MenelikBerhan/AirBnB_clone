@@ -109,11 +109,11 @@ class TestFileStorage(unittest.TestCase):
             self.a.all(1)
         self.assertEqual(str(e.exception), 'all() takes 1 positional '
                          + 'argument but 2 were given')
-        # self.assertEqual(list(self.a.all().values()), self.all_objs)
-        # self.assertEqual(list(self.b.all().values()), self.all_objs)
+        self.assertEqual(list(self.a.all().values()), self.all_objs)
+        self.assertEqual(list(self.b.all().values()), self.all_objs)
         objs_dict = {obj.__class__.__name__ + "." + obj.id: obj
                      for obj in self.all_objs}
-        # self.assertTrue(self.a.all() == objs_dict)
+        self.assertTrue(self.a.all() == objs_dict)
 
     def test_save(self):
         """Tests the `save` method"""
@@ -133,8 +133,8 @@ class TestFileStorage(unittest.TestCase):
         self.a.save()
         objs_dict = {obj.__class__.__name__ + "." + obj.id: obj.to_dict()
                      for obj in self.all_objs}
-        # with open(path, 'r', encoding='utf-8') as file:
-        #     self.assertEqual(json.load(file), objs_dict)
+        with open(path, 'r', encoding='utf-8') as file:
+            self.assertEqual(json.load(file), objs_dict)
         try:
             os.remove(path)
         except FileNotFoundError:
@@ -142,8 +142,8 @@ class TestFileStorage(unittest.TestCase):
         self.b.save()
         objs_dict = {obj.__class__.__name__ + "." + obj.id: obj.to_dict()
                      for obj in self.all_objs}
-        # with open(path, 'r', encoding='utf-8') as file:
-        #     self.assertEqual(json.load(file), objs_dict)
+        with open(path, 'r', encoding='utf-8') as file:
+            self.assertEqual(json.load(file), objs_dict)
 
     def test_reload(self):
         """Tests the `reload` method"""
@@ -170,9 +170,9 @@ class TestFileStorage(unittest.TestCase):
         FileStorage._FileStorage__objects = {}
         new_obj = BaseModel()
         self.a.save()
-        # self.assertTrue(old_objects_dict != self.a.all())
-        # self.assertTrue(self.a.all() == {new_obj.__class__.__name__ + "."
-        #                                  + new_obj.id: new_obj})
+        self.assertTrue(old_objects_dict != self.a.all())
+        self.assertTrue(self.a.all() == {new_obj.__class__.__name__ + "."
+                                         + new_obj.id: new_obj})
         with open(path, 'w', encoding='utf-8') as file:
             json.dump({k: v.to_dict()
                        for k, v in old_objects_dict.items()}, file)
