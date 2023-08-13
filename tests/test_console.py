@@ -462,6 +462,7 @@ class TestAllCommand(TestCase):
 
     def test_all(self):
         """Test the all command"""
+        storage._FileStorage__objects = {}
         with patch('sys.stdout', new=StringIO()) as f:
             HBNBCommand().onecmd("all")
             self.assertEqual(f.getvalue().strip(), "[]")
