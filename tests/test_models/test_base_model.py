@@ -152,7 +152,11 @@ class TestBaseModel(unittest.TestCase):
             self.assertEqual(obj.to_dict(), obj_dict)
 
     def test_doc(self):
-        self.assertIsNone(BaseModel.__doc__)
+        """Tests presence of documentation"""
+        self.assertIsNotNone(__import__('models.base_model').__doc__)
+        self.assertIsNotNone(BaseModel.__doc__)
+        self.assertIsNotNone(BaseModel.__init__.__doc__)
+        self.assertIsNotNone(BaseModel.__str__.__doc__)
         self.assertIsNotNone(BaseModel.save.__doc__)
         self.assertIsNotNone(BaseModel.to_dict.__doc__)
 
