@@ -175,6 +175,8 @@ class TestFileStorage(unittest.TestCase):
             self.assertEqual(str(v), str(old_objects_dict[k]))
 
     def test_doc(self):
+        """Tests presence of documentation"""
+        self.assertIsNotNone(__import__('models.engine.file_storage').__doc__)
         self.assertIsNotNone(FileStorage.__doc__)
         self.assertIsNotNone(FileStorage.all.__doc__)
         self.assertIsNotNone(FileStorage.new.__doc__)
