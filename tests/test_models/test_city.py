@@ -156,6 +156,11 @@ class TestCity(unittest.TestCase):
             obj_dict['updated_at'] = obj.updated_at.isoformat()
             self.assertEqual(obj.to_dict(), obj_dict)
 
+    def test_doc(self):
+        """Tests presence of documentation"""
+        self.assertIsNotNone(__import__('models.city').__doc__)
+        self.assertIsNotNone(City.__doc__)
+
 
 if __name__ == '__main__':
     unittest.main()
