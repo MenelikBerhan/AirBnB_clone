@@ -151,6 +151,11 @@ class TestBaseModel(unittest.TestCase):
             obj_dict['updated_at'] = obj.updated_at.isoformat()
             self.assertEqual(obj.to_dict(), obj_dict)
 
+    def test_doc(self):
+        self.assertIsNone(BaseModel.__doc__)
+        self.assertIsNotNone(BaseModel.save.__doc__)
+        self.assertIsNotNone(BaseModel.to_dict.__doc__)
+
 
 if __name__ == '__main__':
     unittest.main()

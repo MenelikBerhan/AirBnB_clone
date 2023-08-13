@@ -182,6 +182,13 @@ class TestFileStorage(unittest.TestCase):
         for k, v in self.a.all().items():
             self.assertEqual(str(v), str(old_objects_dict[k]))
 
+    def test_doc(self):
+        self.assertIsNotNone(FileStorage.__doc__)
+        self.assertIsNotNone(FileStorage.all.__doc__)
+        self.assertIsNotNone(FileStorage.new.__doc__)
+        self.assertIsNotNone(FileStorage.save.__doc__)
+        self.assertIsNotNone(FileStorage.reload.__doc__)
+
 
 if __name__ == '__main__':
     unittest.main()
