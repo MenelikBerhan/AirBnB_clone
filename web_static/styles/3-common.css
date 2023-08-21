@@ -1,0 +1,18 @@
+/* Styling for body */
+
+*,
+*:before,
+*:after {
+  -webkit-box-sizing: border-box;
+     -moz-box-sizing: border-box;	 
+      -ms-box-sizing: border-box;
+         box-sizing: border-box;
+}
+
+body {
+	margin: 0;
+	padding: 0;
+	font-color: #484848;
+	font-size: 14px;
+	font-family: Circular, "Helvetica Neue", Helvetica,Arial, sans-serif;
+}
