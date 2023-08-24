@@ -10,7 +10,7 @@ header {
 
 /* Header logo */
 .header_logo {
-    background: url("../images/logo.png");
+	background: url("../images/logo.png");
 	background-position: 0 5px;
 	background-repeat: no-repeat;
 	height: 60px;

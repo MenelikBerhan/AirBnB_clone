@@ -56,12 +56,12 @@ table {
   -webkit-box-sizing: border-box;
      -moz-box-sizing: border-box;	 
       -ms-box-sizing: border-box;
-         box-sizing: border-box;
+					box-sizing: border-box;
 }
 
 body {
 	color: #484848;
-	font-family: Circular, "Helvetica Neue", Helvetica,Arial, sans-serif;
+	font-family: Circular, "Helvetica Neue", Helvetica, Arial, sans-serif;
 	font-size: 14px;
 	margin: 0;
 	padding: 0;
